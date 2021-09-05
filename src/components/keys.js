@@ -39,6 +39,11 @@ const Keys = ({ output }) => {
     },
     {
       className: 'key',
+      dataType: 'operator',
+      dataValue: '%'
+    },
+    {
+      className: 'key',
       dataType: 'number',
       dataValue: '6'
     },

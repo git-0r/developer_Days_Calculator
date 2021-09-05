@@ -3,41 +3,120 @@ import "./styles.css";
 import Keys from "./components/keys";
 
 export default function App() {
-  const [output, setOutput] = useState("");
-  const [firstValue, setFirstValue] = useState(null);
-  const [operator, setOperator] = useState(null);
+    const [result, setResult] = useState("")
+    const [firstValue, setFirstValue] = useState("")
+    const [secondValue, setSecondValue] = useState("")
+    const [operator, setOperator] = useState(null)
 
-  const updateOutput = (e) => {
-    const btnType = e.target.dataset.type;
-    const btnValue = e.target.dataset.value;
 
-    if (output === "" && btnType === "operator") {
-    } else if (btnType === "decimal" && output.toString().includes(".")) {
-    } else if (btnType === "operator" && output !== "") {
-      setFirstValue(output);
-      setOperator(btnValue);
-      setOutput("");
-    } else if (btnType === "calculate") {
-      console.log(operator, firstValue, output);
+    const calculate = (e) => {
+        console.log(e.target.dataset.type)
+        const btnValue = e.target.dataset.value
+        const btnType = e.target.dataset.type
 
-      if (operator === "+") setOutput(Number(firstValue) + Number(output));
-      if (operator === "-") setOutput(Number(firstValue) - Number(output));
-      if (operator === "*") setOutput(Number(firstValue) * Number(output));
-      if (operator === "/") setOutput(Number(firstValue) / Number(output));
-    } else if (btnType === "clear") {
-      setOutput("");
-      setFirstValue(null);
-      setOperator(null);
-    } else setOutput(output + btnValue);
-  };
+        if (btnValue === "-" && result !== "" && operator === "*") {
+            setSecondValue(secondValue + btnValue)
+        }
+        else if (btnType === "operator" && result !== "") {
 
-  return (
-    <div>
-      <h1>calculator</h1>
-      <div className="container">
-        <div className="output">{output}</div>
-        <Keys output={updateOutput} />
-      </div>
-    </div>
-  );
+            setFirstValue(result)
+            setSecondValue("")
+            setOperator(btnValue)
+        }
+        else if (btnType === "operator" && firstValue === "" && btnValue === "-") {
+
+            setFirstValue(btnValue)
+
+        }
+        else if (btnType === "number" && operator === null) {
+
+            setFirstValue(firstValue + btnValue)
+
+        } else if (btnType === "number" && operator !== null) {
+
+            setSecondValue(secondValue + btnValue)
+
+            if (firstValue !== "" && operator !== null) {
+
+                if (operator === "+") {
+
+                    const result = Number(firstValue) + Number(secondValue + btnValue);
+                    setResult(result);
+                }
+
+                if (operator === "-") {
+
+                    const result = Number(firstValue) - Number(secondValue + btnValue);
+                    setResult(result);
+                }
+
+                if (operator === "*") {
+
+                    const result = Number(firstValue) * Number(secondValue + btnValue.replace("*", "+"));
+
+                    if (isNaN(result)) {
+                        setResult("Bad expression")
+                    } else { setResult(result) };
+                }
+
+
+                if (operator === "/") {
+
+                    if (Number(secondValue + btnValue) === 0) {
+
+                        setResult("Can't divide by 0")
+
+                    } else {
+
+                        const result = Number(firstValue) / Number(secondValue + btnValue);
+                        setResult(result);
+                    }
+                }
+
+                if (operator === "%") {
+
+                    const result = (Number(firstValue) / 100) * Number(secondValue + btnValue);
+                    setResult(result)
+                }
+            }
+
+        } else if (btnValue === "-" && firstValue !== "" && operator === "*") {
+
+            setSecondValue(secondValue + btnValue)
+
+        }
+        else if (btnType === "operator" && firstValue !== "" && firstValue !== "-") {
+
+            setOperator(btnValue)
+
+        }
+        else if (btnType === "decimal" && operator === null && !firstValue.includes(".")) {
+
+            setFirstValue(firstValue + btnValue)
+
+        }
+        else if (btnType === "decimal" && operator !== null && !secondValue.includes(".")) {
+
+            setSecondValue(secondValue + btnValue)
+
+        }
+        else if (btnType === "clear") {
+
+            setResult("")
+            setFirstValue("")
+            setSecondValue("")
+            setOperator(null)
+        }
+    }
+
+    return (
+        <div>
+            <h1>calculator</h1>
+            <div className="container">
+                <div className="expression">{firstValue}{operator}{secondValue}</div>
+                <div className="output">{result}</div>
+                <Keys output={calculate} />
+            </div>
+        </div>
+    );
 }
