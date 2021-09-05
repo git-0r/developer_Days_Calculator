@@ -10,7 +10,6 @@ export default function App() {
 
 
     const calculate = (e) => {
-        console.log(e.target.dataset.type)
         const btnValue = e.target.dataset.value
         const btnType = e.target.dataset.type
 
